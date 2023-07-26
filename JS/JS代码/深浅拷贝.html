@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深浅拷贝</title>
+</head>
+
+<body>
+    <!-- 使用CDN引入Lodash -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script>
+    // 浅拷贝
+        // 1.Object.assign(新对象, ...源对象)方法实现浅拷贝
+            let obj = { x: 123, y: 'abc' }
+            let newObj = {}
+            Object.assign(newObj, obj)
+            console.log('Object.assign()',newObj)
+        // 2.Array.Prototype.concat()方法将arr数组数据浅拷贝到newArr中
+            let arr1 = [1, 2, 3, 4, 5]
+            let newArr1 = arr1.concat()
+            console.log('Array.Prototype.concat()',newArr1) // [1,2,3,4,5]
+        // 3.Array.Prototype.slice()：arr.slice(begin,end),对数组arr进行切片，从begin位置开始，end位置结束(不包括end位置)，返回一个新的切片后的数组，如果slice不传参则拷贝整改数组
+            let arr2 = [1, 2, 3, 4, 5]
+            let newArr2 = arr2.slice()
+            console.log('Array.Prototype.slice()',newArr2) // [1,2,3,4,5]
+    // 深拷贝
+        // JSON方法实现深拷贝：
+            let arr3 = [1,2,{age:12}]
+            // 深拷贝arr3
+            let newArr3 = JSON.parse(JSON.stringify(arr3))
+            arr3[2].age = 14
+            console.log('JSON方法',newArr3,arr3)
+        // 递归方法实现深拷贝：
+            // 定义检测数据类型的功能函数
+            function checkedType(target) {
+                // 返回对象的数据类型
+                return Object.prototype.toString.call(target).slice(8,-1)
+            }
+            // 实现深度克隆--对象/数组
+            function clone(target) {
+                // 判断拷贝的数据类型
+                let result,targetType = checkedType(target)
+                if (targetType == 'Object') {
+                    result = {}
+                } else if (targetType == 'Array') {
+                    result = []
+                } else {
+                    return target
+                }
+
+                // 遍历目标数据
+                for (let i in target) {
+                    let value = target[i]
+                    if (checkedType(value) == 'Object' || checkedType(value) == 'Array') {
+                       result[i] = clone(value)
+                    } else {
+                       result[i] = value
+                    }
+                }
+
+                return result
+            }
+            let arr4 = [1,2,{name:'wcz',info: {age:12,sex:'男'}}]
+            let obj1 = {
+                name: 'wcz',
+                age: 23,
+                info: {
+                    sex:'男',
+                    school: {
+                        name: 'cdu',
+                        address: 'cd'
+                    }
+                }
+            }
+            let newArr4 = clone(arr4)
+            let newObj1 = clone(obj1)
+            arr4[2].info.sex = '女'
+            obj1.info.school.name = 'cdu1'
+            console.log('递归',clone(newArr4),arr4)
+            console.log('递归',clone(newObj1),obj1)
+    // 第三方库：lodash _.cloneDeep() 方法深拷贝
+        // 原始对象
+        const originalObj = {
+            name: "John",
+            age: 30,
+            address: {
+                city: "New York",
+                country: "USA"
+            },
+            hobbies: ["Reading", "Cooking"]
+        };
+
+        // 使用_.cloneDeep()进行深拷贝
+        const clonedObj = _.cloneDeep(originalObj);
+
+        // 修改新复制的对象
+        clonedObj.name = "Mike";
+        clonedObj.address.city = "Los Angeles";
+        clonedObj.hobbies.push("Traveling");
+
+        // 输出原始对象和新复制的对象
+        console.log('lodash三方库',originalObj,clonedObj);
+
+    </script>
+</body>
+
+</html>
