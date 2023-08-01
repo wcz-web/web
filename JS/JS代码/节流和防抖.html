@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节流和防抖</title>
+</head>
+<body>
+    <!-- 防抖 -->
+    <h1>防抖</h1>
+    <input type="text" class="search">
+
+    <!-- 节流 -->
+    <h1>节流</h1>
+    <input type="text" class="search2">
+
+    <script>
+        let search = document.querySelector('.search')
+        // 防抖函数
+        function debounce(fun , delay){
+            let timer = null
+            return function (...args) {
+                clearTimeout(timer) 
+                timer = setTimeout(()=>{
+                    fun.apply(this,args)
+                },delay)
+            }
+        }
+        // 未使用防抖
+        // search.addEventListener('input',() => {
+        //     console.log(search.value)
+        // })
+
+        // 加入防抖
+        search.addEventListener('input',debounce(()=>{
+            console.log(search.value)
+        },1000))
+    
+        let search2 = document.querySelector('.search2')
+        function throttle(func, delay) {
+            let timer = null
+            return function (...args) {
+                if (!timer) {
+                timer = setTimeout(() => {
+                    func.apply(this,args)
+                    timer = null
+                }, delay);
+            }
+            }
+        }
+        search2.addEventListener('input',throttle(()=>{
+            console.log(search2.value,`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`)
+        },1000))
+    </script>
+
+</body>
+</html>
